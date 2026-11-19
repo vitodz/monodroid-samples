@@ -105,15 +105,18 @@ namespace MonoDroid.ApiDemo
 
 		public override View GetView (int position, View convertView, ViewGroup parent)
 		{
-			// Make an ImageView to show a photo
-			ImageView i = new ImageView (self);
+			// Reuse the recycled ImageView when possible instead of allocating one per row
+			ImageView i = convertView as ImageView;
+			if (i == null) {
+				i = new ImageView (self);
+				i.SetAdjustViewBounds (true);
+				i.LayoutParameters = new AbsListView.LayoutParams (AbsListView.LayoutParams.WrapContent,
+				                                                   AbsListView.LayoutParams.WrapContent);
+				// Give it a nice background
+				i.SetBackgroundResource (Resource.Drawable.picture_frame);
+			}
 
 			i.SetImageResource (mPhotos[position]);
-			i.SetAdjustViewBounds (true);
-			i.LayoutParameters = new AbsListView.LayoutParams (AbsListView.LayoutParams.WrapContent,
-			                                                   AbsListView.LayoutParams.WrapContent);
-			// Give it a nice background
-			i.SetBackgroundResource (Resource.Drawable.picture_frame);
 			return i;
 		}
 
